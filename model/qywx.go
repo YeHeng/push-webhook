@@ -1,4 +1,4 @@
-package json
+package model
 
 type TextMessage struct {
 	MsgType             string   `json:"msgtype"`

@@ -27,10 +27,7 @@ func main() {
 		sugar.Infof("log file changed: %s.", e.Name)
 	})*/
 
-	router.POST("/alertmanager",
-		func(c *gin.Context) {
-			handler.AlertManagerHandler(c, sugar)
-		})
+	router.POST("/alertmanager", handler.AlertManagerHandler(sugar))
 
 	err := router.Run()
 	if err != nil {

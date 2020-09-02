@@ -8,27 +8,29 @@ import (
 	"net/http"
 )
 
-func AlertManagerHandler(c *gin.Context, sugar *zap.SugaredLogger) {
+func AlertManagerHandler(sugar *zap.SugaredLogger) gin.HandlerFunc {
 
-	var notification model.Notification
+	return func(c *gin.Context) {
+		var notification model.Notification
 
-	err := c.BindJSON(&notification)
-	key := c.Params.ByName("key")
+		err := c.BindJSON(&notification)
+		key := c.Params.ByName("key")
 
-	sugar.Debug("received alertmanager json: %s, robot key: %s", notification, key)
+		sugar.Debug("received alertmanager json: %s, robot key: %s", notification, key)
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		err = notifier.Send(notification, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="+key)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": " successful receive alert notification message!"})
 	}
-
-	err = notifier.Send(notification, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="+key)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": " successful receive alert notification message!"})
 
 }

@@ -3,35 +3,68 @@ package main
 import (
 	"github.com/YeHeng/qy-wexin-webhook/handler"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
+	"github.com/sirupsen/logrus"
+	"time"
 )
+
+func Logger() *logrus.Logger {
+
+	//实例化
+	logger := logrus.New()
+
+	//设置日志级别
+	logger.SetLevel(logrus.DebugLevel)
+
+	return logger
+}
+
+func LoggerToFile() gin.HandlerFunc {
+	logger := Logger()
+	return func(c *gin.Context) {
+		// 开始时间
+		startTime := time.Now()
+
+		// 处理请求
+		c.Next()
+
+		// 结束时间
+		endTime := time.Now()
+
+		// 执行时间
+		latencyTime := endTime.Sub(startTime)
+
+		// 请求方式
+		reqMethod := c.Request.Method
+
+		// 请求路由
+		reqUri := c.Request.RequestURI
+
+		// 状态码
+		statusCode := c.Writer.Status()
+
+		// 请求IP
+		clientIP := c.ClientIP()
+
+		//日志格式
+		logger.Infof("| %3d | %13v | %15s | %s | %s",
+			statusCode,
+			latencyTime,
+			clientIP,
+			reqMethod,
+			reqUri,
+		)
+	}
+}
 
 func main() {
 	router := gin.Default()
-
-	sugar := zap.NewExample().Sugar()
-	defer sugar.Sync()
-
-	/*vp := viper.New()
-	vp.SetConfigName("wx-robot")
-	vp.AddConfigPath(".")
-	vp.AddConfigPath("/etc")
-	vp.AddConfigPath("/root")
-	vp.SetConfigType("yaml")
-	err := vp.ReadInConfig()
-	if err != nil {
-		sugar.Errorf("Failed to read config file. %v", err)
-	}
-	vp.WatchConfig()
-	vp.OnConfigChange(func(e fsnotify.Event) {
-		sugar.Infof("log file changed: %s.", e.Name)
-	})*/
-
-	router.POST("/alertmanager", handler.AlertManagerHandler(sugar))
+	logger := Logger()
+	router.Use(LoggerToFile())
+	router.POST("/alertmanager", handler.AlertManagerHandler(logger))
 
 	err := router.Run()
 	if err != nil {
-		sugar.Errorf("Gin start fail. %s", err)
+		logger.Fatalf("Gin start fail. %s", err)
 	}
 
 }

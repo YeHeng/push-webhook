@@ -3,25 +3,33 @@ package notifier
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/YeHeng/qy-wexin-webhook/model"
 	"github.com/YeHeng/qy-wexin-webhook/transformer"
-	"log"
+	"github.com/sirupsen/logrus"
+	"io/ioutil"
 	"net/http"
 )
 
 // Send send markdown message to dingtalk
-func Send(notification model.Notification, defaultRobot string) (err error) {
+func Send(notification model.Notification, defaultRobot string, logger *logrus.Logger) (model.ResultVo, error) {
 
 	markdown, robotURL, err := transformer.TransformToMarkdown(notification)
 
 	if err != nil {
-		return
+		return model.ResultVo{
+				Code:    400,
+				Message: "marshal json fail " + err.Error(),
+			},
+			nil
 	}
 
 	data, err := json.Marshal(markdown)
 	if err != nil {
-		return
+		return model.ResultVo{
+				Code:    400,
+				Message: "marshal json fail " + err.Error(),
+			},
+			nil
 	}
 
 	var qywxRobotURL string
@@ -33,7 +41,11 @@ func Send(notification model.Notification, defaultRobot string) (err error) {
 	}
 
 	if len(qywxRobotURL) == 0 {
-		return nil
+		return model.ResultVo{
+				Code:    404,
+				Message: "robot url is nil",
+			},
+			nil
 	}
 
 	req, err := http.NewRequest(
@@ -42,8 +54,11 @@ func Send(notification model.Notification, defaultRobot string) (err error) {
 		bytes.NewBuffer(data))
 
 	if err != nil {
-		log.Fatal("qywx robot url not found ignore:")
-		return
+		return model.ResultVo{
+				Code:    400,
+				Message: "request robot url fail " + err.Error(),
+			},
+			nil
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -51,12 +66,24 @@ func Send(notification model.Notification, defaultRobot string) (err error) {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return
+		return model.ResultVo{
+				Code:    404,
+				Message: "request wx api url fail " + err.Error(),
+			},
+			nil
 	}
 
 	defer resp.Body.Close()
-	fmt.Println("response Status:", resp.Status)
-	fmt.Println("response Headers:", resp.Header)
 
-	return
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	bodyString := string(bodyBytes)
+	logger.Debugf("response: %s, header: %s", bodyString, resp.Header)
+
+	return model.ResultVo{
+		Code:    resp.StatusCode,
+		Message: bodyString,
+	}, nil
 }

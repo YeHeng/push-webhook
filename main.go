@@ -20,26 +20,26 @@ func Logger() *logrus.Logger {
 		fmt.Println(err.Error())
 	}
 	logFileName := now.Format("webhook") + ".log"
-	//日志文件
+	// 日志文件
 	fileName := path.Join(logFilePath, logFileName)
 	if _, err := os.Stat(fileName); err != nil {
 		if _, err := os.Create(fileName); err != nil {
 			fmt.Println(err.Error())
 		}
 	}
-	//写入文件
+	// 写入文件
 	src, err := os.OpenFile(fileName, os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		fmt.Println("err", err)
 	}
 
-	//实例化
+	// 实例化
 	logger := logrus.New()
 
-	//设置输出
+	// 设置输出
 	logger.Out = src
 
-	//设置日志级别
+	// 设置日志级别
 	logger.SetLevel(logrus.DebugLevel)
 
 	return logger
@@ -54,5 +54,4 @@ func main() {
 	if err != nil {
 		logger.Fatalf("Gin start fail. %s", err)
 	}
-
 }

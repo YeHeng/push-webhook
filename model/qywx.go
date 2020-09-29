@@ -30,6 +30,6 @@ type News struct {
 type Article struct {
 	Title       string `json:"title"`
 	Description string `json:"description"`
-	Url         string `json:"url"`
-	PicUrl      string `json:"picurl"`
+	URL         string `json:"url"`
+	PicURL      string `json:"picurl"`
 }

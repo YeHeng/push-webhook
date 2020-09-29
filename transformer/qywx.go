@@ -6,8 +6,7 @@ import (
 	"github.com/YeHeng/qy-wexin-webhook/model"
 )
 
-func TransformToMarkdown(notification model.Notification) (markdown *model.MarkdownMessage, robotURL string, err error) {
-
+func TransformToMarkdown(notification model.AlertManagerNotification) (markdown *model.MarkdownMessage, robotURL string, err error) {
 	groupKey := notification.GroupKey
 	status := notification.Status
 
@@ -18,7 +17,7 @@ func TransformToMarkdown(notification model.Notification) (markdown *model.Markd
 
 	buffer.WriteString(fmt.Sprintf("### 通知组%s(当前状态:%s) \n", groupKey, status))
 
-	buffer.WriteString(fmt.Sprintf("#### 告警项:\n"))
+	buffer.WriteString("#### 告警项:\n")
 
 	for _, alert := range notification.Alerts {
 		annotations := alert.Annotations

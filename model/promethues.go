@@ -9,7 +9,7 @@ type Alert struct {
 	EndsAt      time.Time         `json:"endsAt"`
 }
 
-type Notification struct {
+type AlertManagerNotification struct {
 	Version           string            `json:"version"`
 	GroupKey          string            `json:"groupKey"`
 	Status            string            `json:"status"`

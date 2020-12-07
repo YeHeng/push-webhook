@@ -7,7 +7,7 @@ import (
 )
 
 func TransformToMarkdown(notification model.AlertManagerNotification) (markdown *model.MarkdownMessage, robotURL string, err error) {
-	groupKey := notification.GroupKey
+	groupLabel := notification.GroupLabels
 	status := notification.Status
 
 	annotations := notification.CommonAnnotations
@@ -15,20 +15,24 @@ func TransformToMarkdown(notification model.AlertManagerNotification) (markdown 
 
 	var buffer bytes.Buffer
 
-	buffer.WriteString(fmt.Sprintf("### 通知组%s(当前状态:%s) \n", groupKey, status))
-
-	buffer.WriteString("#### 告警项:\n")
+	buffer.WriteString("## 告警项:\n")
 
 	for _, alert := range notification.Alerts {
 		annotations := alert.Annotations
-		buffer.WriteString(fmt.Sprintf("##### %s\n > %s\n", annotations["summary"], annotations["description"]))
-		buffer.WriteString(fmt.Sprintf("\n> 开始时间：%s\n", alert.StartsAt.Format("15:04:05")))
+		labels := alert.Labels
+		buffer.WriteString(fmt.Sprintf("### 【%s】%s\n", annotations["summary"], annotations["description"]))
+		if len(annotations["quantile"]) > 0 && len(annotations["metrics"]) > 0 {
+			buffer.WriteString(fmt.Sprintf("### %s超过阀值<font color=\\\"warning\\\">【%s】</font>\n", annotations["metrics"], annotations["quantile"]))
+		}
+		buffer.WriteString(fmt.Sprintf("\n> NAMESPACES: %s, POD:%s, CONTAINER:%s, IP:%s\n", labels["namespace"], labels["pod"], labels["container"], labels["ip"]))
+		buffer.WriteString(fmt.Sprintf("\n> 开始时间：%s\n", alert.StartsAt.Format("2020-12-07T15:04:05")))
+		buffer.WriteString(fmt.Sprintf("\n> 结束时间：%s\n", alert.EndsAt.Format("2020-12-07T15:04:05")))
 	}
 
 	markdown = &model.MarkdownMessage{
 		MsgType: "markdown",
 		Markdown: &model.Markdown{
-			Content: fmt.Sprintf("通知组：%s(当前状态:%s)\n%s", groupKey, status, buffer.String()),
+			Content: fmt.Sprintf("# 【%s】告警(当前状态:%s)\n%s", groupLabel["job"], status, buffer.String()),
 		},
 		MentionedList: []string{"yeheng@zuzuche.com"},
 	}

@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"github.com/YeHeng/qy-wexin-webhook/model"
 	"github.com/YeHeng/qy-wexin-webhook/transformer"
+	. "github.com/YeHeng/qy-wexin-webhook/util"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 )
 
-func AlertManagerHandler(logger *logrus.Logger) gin.HandlerFunc {
+func AlertManagerHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var notification model.AlertManagerNotification
 
@@ -20,13 +20,13 @@ func AlertManagerHandler(logger *logrus.Logger) gin.HandlerFunc {
 
 		bolB, _ := json.Marshal(notification)
 
-		logger.Debugf("received alertmanager json: %s, robot key: %s", string(bolB), key)
+		Logger.Debug("received alertmanager json: %s, robot key: %s", string(bolB), key)
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		result, e := send(notification, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="+key, logger)
+		result, e := send(notification, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="+key)
 		if e != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": e.Error()})
 			return
@@ -35,7 +35,7 @@ func AlertManagerHandler(logger *logrus.Logger) gin.HandlerFunc {
 	}
 }
 
-func send(notification model.AlertManagerNotification, defaultRobot string, logger *logrus.Logger) (model.ResultVo, error) {
+func send(notification model.AlertManagerNotification, defaultRobot string) (model.ResultVo, error) {
 
 	markdown, robotURL, err := transformer.TransformToMarkdown(notification)
 
@@ -101,10 +101,10 @@ func send(notification model.AlertManagerNotification, defaultRobot string, logg
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logger.Fatal(err)
+		Logger.Fatal(err)
 	}
 	bodyString := string(bodyBytes)
-	logger.Debugf("response: %s, header: %s", bodyString, resp.Header)
+	Logger.Debugf("response: %s, header: %s", bodyString, resp.Header)
 
 	return model.ResultVo{
 		Code:    resp.StatusCode,

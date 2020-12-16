@@ -25,8 +25,8 @@ func TransformToMarkdown(notification model.AlertManagerNotification) (markdown 
 			buffer.WriteString(fmt.Sprintf("### %s超过阀值<font color=\\\"warning\\\">【%s】</font>\n", annotations["metrics"], annotations["quantile"]))
 		}
 		buffer.WriteString(fmt.Sprintf("\n> NAMESPACES: %s, POD:%s, CONTAINER:%s, IP:%s\n", labels["namespace"], labels["pod"], labels["container"], labels["ip"]))
-		buffer.WriteString(fmt.Sprintf("\n> 开始时间：%s\n", alert.StartsAt.Format("2020-12-07T15:04:05")))
-		buffer.WriteString(fmt.Sprintf("\n> 结束时间：%s\n", alert.EndsAt.Format("2020-12-07T15:04:05")))
+		buffer.WriteString(fmt.Sprintf("\n> 开始时间：%s\n", alert.StartsAt.Format("2006-01-02 15:04:05-0700")))
+		buffer.WriteString(fmt.Sprintf("\n> 结束时间：%s\n", alert.EndsAt.Format("2006-01-02 15:04:05-0700")))
 	}
 
 	markdown = &model.MarkdownMessage{

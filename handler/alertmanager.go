@@ -20,7 +20,7 @@ func AlertManagerHandler() gin.HandlerFunc {
 
 		bolB, _ := json.Marshal(notification)
 
-		Logger.Debug("received alertmanager json: %s, robot key: %s", string(bolB), key)
+		Logger.Infof("received alertmanager json: %s, robot key: %s", string(bolB), key)
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

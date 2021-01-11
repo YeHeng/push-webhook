@@ -37,7 +37,7 @@ func GrafanaManagerHandler() gin.HandlerFunc {
 
 func grafanaSend2Wx(notification GrafanaAlert, defaultRobot string) (ResultVo, error) {
 
-	markdown, robotURL, err := GrafanaToMarkdown(notification)
+	markdown, err := GrafanaToMarkdown(notification)
 
 	if err != nil {
 		return ResultVo{
@@ -56,15 +56,7 @@ func grafanaSend2Wx(notification GrafanaAlert, defaultRobot string) (ResultVo, e
 			nil
 	}
 
-	var qywxRobotURL string
-
-	if robotURL != "" {
-		qywxRobotURL = robotURL
-	} else {
-		qywxRobotURL = defaultRobot
-	}
-
-	if len(qywxRobotURL) == 0 {
+	if len(defaultRobot) == 0 {
 		return ResultVo{
 				Code:    404,
 				Message: "robot url is nil",
@@ -74,7 +66,7 @@ func grafanaSend2Wx(notification GrafanaAlert, defaultRobot string) (ResultVo, e
 
 	req, err := http.NewRequest(
 		"POST",
-		qywxRobotURL,
+		defaultRobot,
 		bytes.NewBuffer(data))
 
 	if err != nil {

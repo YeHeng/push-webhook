@@ -7,4 +7,5 @@ import (
 
 func configRoute(engine *gin.Engine) {
 	engine.POST("/alertmanager", handler.AlertManagerHandler())
+	engine.POST("/grafana", handler.GrafanaManagerHandler())
 }

@@ -19,12 +19,12 @@ type Markdown struct {
 }
 
 type NewsMessage struct {
-	MsgType  string    `json:"msgtype"`
-	Markdown *Markdown `json:"news"`
+	MsgType  string   `json:"msgtype"`
+	Markdown Markdown `json:"news"`
 }
 
 type News struct {
-	Articles *[]Article `json:"articles"`
+	Articles []Article `json:"articles"`
 }
 
 type Article struct {

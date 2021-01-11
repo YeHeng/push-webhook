@@ -6,9 +6,9 @@ import (
 	"github.com/YeHeng/qy-wexin-webhook/model"
 )
 
-func TransformToMarkdown(notification model.AlertManagerNotification) (markdown *model.MarkdownMessage, robotURL string, err error) {
-	groupLabel := notification.GroupLabels
+func AlertManagerToMarkdown(notification model.AlertManagerNotification) (markdown *model.MarkdownMessage, robotURL string, err error) {
 	status := notification.Status
+	commonLabels := notification.CommonAnnotations
 
 	annotations := notification.CommonAnnotations
 	robotURL = annotations["robotUrl"]
@@ -32,9 +32,8 @@ func TransformToMarkdown(notification model.AlertManagerNotification) (markdown 
 	markdown = &model.MarkdownMessage{
 		MsgType: "markdown",
 		Markdown: &model.Markdown{
-			Content: fmt.Sprintf("# 【%s】告警(当前状态:%s)\n%s", groupLabel["job"], status, buffer.String()),
+			Content: fmt.Sprintf("# 【%s】告警(当前状态:%s)\n%s", commonLabels["alertname"], status, buffer.String()),
 		},
-		MentionedList: []string{"yeheng@zuzuche.com"},
 	}
 	return
 }

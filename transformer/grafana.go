@@ -23,14 +23,14 @@ func GrafanaToMarkdown(notification model.GrafanaAlert) (newsMessage *model.NewM
 			qyWxUrl = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=" + tags["qyweixin_key"]
 		}
 		if len(tags["base_url"]) > 0 {
-			ruleUrl = strings.ReplaceAll(ruleUrl, "http://localhost:3000", tags["base_url"])
+			ruleUrl = strings.ReplaceAll(ruleUrl, "http://localhost:3000/", tags["base_url"])
 		}
 	}
 
 	article := &model.Article{
 		Title:       notification.Title,
 		Description: buffer.String(),
-		URL:         notification.RuleUrl,
+		URL:         ruleUrl,
 		PicURL:      notification.ImageUrl,
 	}
 

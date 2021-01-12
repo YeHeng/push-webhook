@@ -6,7 +6,7 @@ import (
 	"github.com/YeHeng/qy-wexin-webhook/model"
 )
 
-func GrafanaToMarkdown(notification model.GrafanaAlert) (newsMessage *model.NewMessage, err error) {
+func GrafanaToMarkdown(notification model.GrafanaAlert) (newsMessage *model.NewMessage, qyWxUrl string, err error) {
 
 	var buffer bytes.Buffer
 
@@ -14,6 +14,15 @@ func GrafanaToMarkdown(notification model.GrafanaAlert) (newsMessage *model.NewM
 
 	for _, alert := range notification.EvalMatches {
 		buffer.WriteString(fmt.Sprintf("指标：【%s】当前值为：%d\n", alert.Metric, alert.Value))
+	}
+
+	if len(notification.Tags) > 0 {
+		tags := notification.Tags
+		if len(tags["qyweixin_key"]) > 0 {
+			qyWxUrl = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=" + tags["qyweixin_key"]
+		}
+	} else {
+		qyWxUrl = ""
 	}
 
 	article := &model.Article{

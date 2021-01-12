@@ -16,7 +16,7 @@ type GrafanaAlert struct {
 }
 
 type EvalMatch struct {
-	Value  int               `json:"value"`
+	Value  float64           `json:"value"`
 	Metric string            `json:"metric"`
 	Tags   map[string]string `json:"tags"`
 }

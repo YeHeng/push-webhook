@@ -6,15 +6,14 @@ import (
 	"github.com/YeHeng/qy-wexin-webhook/model"
 )
 
-func GrafanaToMarkdown(notification model.GrafanaAlert) (news *model.News, err error) {
-	status := notification.State
+func GrafanaToMarkdown(notification model.GrafanaAlert) (newsMessage *model.NewMessage, err error) {
 
 	var buffer bytes.Buffer
 
-	buffer.WriteString(fmt.Sprintf("## 【%s】告警项:【%s】\n", status, notification.RuleName))
+	buffer.WriteString(fmt.Sprintf("告警项:【%s】\n", notification.RuleName))
 
 	for _, alert := range notification.EvalMatches {
-		buffer.WriteString(fmt.Sprintf("### 指标：【%s】当前值为：%s\n", alert.Metric, alert.Value))
+		buffer.WriteString(fmt.Sprintf("指标：【%s】当前值为：%d\n", alert.Metric, alert.Value))
 	}
 
 	article := &model.Article{
@@ -24,8 +23,13 @@ func GrafanaToMarkdown(notification model.GrafanaAlert) (news *model.News, err e
 		PicURL:      notification.ImageUrl,
 	}
 
-	news = &model.News{
+	news := &model.News{
 		Articles: []model.Article{*article},
+	}
+
+	newsMessage = &model.NewMessage{
+		News:    news,
+		MsgType: "news",
 	}
 
 	return

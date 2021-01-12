@@ -23,6 +23,11 @@ type NewsMessage struct {
 	Markdown Markdown `json:"news"`
 }
 
+type NewMessage struct {
+	MsgType string `json:"msgtype"`
+	News    *News  `json:"news"`
+}
+
 type News struct {
 	Articles []Article `json:"articles"`
 }

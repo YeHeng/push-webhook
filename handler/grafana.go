@@ -24,11 +24,13 @@ func GrafanaManagerHandler() gin.HandlerFunc {
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			Logger.Errorf("序列化json异常，原因：%v", err)
 			return
 		}
 		result, e := grafanaSend2Wx(alert, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="+key)
 		if e != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": e.Error()})
+			Logger.Errorf("推送企业微信异常，原因：%v", err)
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"message": result.Message, "Code": result.Code})

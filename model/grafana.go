@@ -12,11 +12,11 @@ type GrafanaAlert struct {
 	RuleId      int               `json:"ruleId"`
 	RuleName    string            `json:"ruleName"`
 	RuleUrl     string            `json:"ruleUrl"`
-	State       *GrafanaStateEnum `json:"state"`
+	State       string            `json:"state"`
 }
 
 type EvalMatch struct {
-	Value  string            `json:"value"`
+	Value  int               `json:"value"`
 	Metric string            `json:"metric"`
 	Tags   map[string]string `json:"tags"`
 }

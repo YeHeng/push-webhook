@@ -1,4 +1,4 @@
-package transformer
+package grafana
 
 import (
 	"bytes"
@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func GrafanaToMarkdown(notification model.GrafanaAlert) (newsMessage *model.NewMessage, qyWxUrl string, err error) {
+func grafanaToMarkdown(notification model.GrafanaAlert) (newsMessage *model.NewMessage, qyWxUrl string, err error) {
 
 	var buffer bytes.Buffer
 	qyWxUrl = ""

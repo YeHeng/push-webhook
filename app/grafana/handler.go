@@ -1,45 +1,42 @@
-package handler
+package grafana
 
 import (
 	"bytes"
 	"encoding/json"
 	. "github.com/YeHeng/qy-wexin-webhook/model"
-	. "github.com/YeHeng/qy-wexin-webhook/transformer"
 	. "github.com/YeHeng/qy-wexin-webhook/util"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
 )
 
-func GrafanaManagerHandler() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var alert GrafanaAlert
+func grafanaManagerHandler(c *gin.Context) {
+	var alert GrafanaAlert
 
-		key := c.Query("key")
-		err := c.BindJSON(&alert)
+	key := c.Query("key")
+	err := c.BindJSON(&alert)
 
-		bolB, _ := json.Marshal(alert)
+	bolB, _ := json.Marshal(alert)
 
-		Logger.Infof("received alertmanager json: %s, robot key: %s", string(bolB), key)
+	Logger.Infof("received alertmanager json: %s, robot key: %s", string(bolB), key)
 
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			Logger.Errorf("序列化json异常，原因：%v", err)
-			return
-		}
-		result, e := grafanaSend2Wx(alert, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="+key)
-		if e != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": e.Error()})
-			Logger.Errorf("推送企业微信异常，原因：%v", err)
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"message": result.Message, "Code": result.Code})
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		Logger.Errorf("序列化json异常，原因：%v", err)
+		return
 	}
+	result, e := grafanaSend2Wx(alert, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="+key)
+	if e != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": e.Error()})
+		Logger.Errorf("推送企业微信异常，原因：%v", err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": result.Message, "Code": result.Code})
 }
 
 func grafanaSend2Wx(notification GrafanaAlert, defaultRobot string) (ResultVo, error) {
 
-	markdown, qyWxUrl, err := GrafanaToMarkdown(notification)
+	markdown, qyWxUrl, err := grafanaToMarkdown(notification)
 
 	if err != nil {
 		return ResultVo{

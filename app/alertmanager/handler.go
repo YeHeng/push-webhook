@@ -1,43 +1,40 @@
-package handler
+package alertmanager
 
 import (
 	"bytes"
 	"encoding/json"
 	"github.com/YeHeng/qy-wexin-webhook/model"
-	. "github.com/YeHeng/qy-wexin-webhook/transformer"
 	. "github.com/YeHeng/qy-wexin-webhook/util"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
 )
 
-func AlertManagerHandler() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var notification model.AlertManagerNotification
+func alertManagerHandler(c *gin.Context) {
+	var notification model.AlertManagerNotification
 
-		key := c.Query("key")
-		err := c.BindJSON(&notification)
+	key := c.Query("key")
+	err := c.BindJSON(&notification)
 
-		bolB, _ := json.Marshal(notification)
+	bolB, _ := json.Marshal(notification)
 
-		Logger.Infof("received alertmanager json: %s, robot key: %s", string(bolB), key)
+	Logger.Infof("received alertmanager json: %s, robot key: %s", string(bolB), key)
 
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		result, e := alertmanager2Wx(notification, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="+key)
-		if e != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": e.Error()})
-			return
-		}
-		c.JSON(http.StatusOK, gin.H{"message": result.Message, "Code": result.Code})
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
+	result, e := alertManager2Wx(notification, "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="+key)
+	if e != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": e.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": result.Message, "Code": result.Code})
 }
 
-func alertmanager2Wx(notification model.AlertManagerNotification, defaultRobot string) (model.ResultVo, error) {
+func alertManager2Wx(notification model.AlertManagerNotification, defaultRobot string) (model.ResultVo, error) {
 
-	markdown, robotURL, err := AlertManagerToMarkdown(notification)
+	markdown, robotURL, err := alertManagerToMarkdown(notification)
 
 	if err != nil {
 		return model.ResultVo{

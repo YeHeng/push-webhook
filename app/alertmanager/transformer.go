@@ -1,4 +1,4 @@
-package transformer
+package alertmanager
 
 import (
 	"bytes"
@@ -6,7 +6,7 @@ import (
 	"github.com/YeHeng/qy-wexin-webhook/model"
 )
 
-func AlertManagerToMarkdown(notification model.AlertManagerNotification) (markdown *model.MarkdownMessage, robotURL string, err error) {
+func alertManagerToMarkdown(notification model.AlertManagerNotification) (markdown *model.MarkdownMessage, robotURL string, err error) {
 	status := notification.Status
 	commonLabels := notification.CommonAnnotations
 

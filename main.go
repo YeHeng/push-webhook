@@ -1,25 +1,28 @@
 package main
 
 import (
-	"github.com/YeHeng/qy-wexin-webhook/handler"
+	"fmt"
+	"github.com/YeHeng/qy-wexin-webhook/app/alertmanager"
+	"github.com/YeHeng/qy-wexin-webhook/app/grafana"
+	"github.com/YeHeng/qy-wexin-webhook/routers"
 	. "github.com/YeHeng/qy-wexin-webhook/util"
 	"github.com/gin-gonic/gin"
 	"time"
 )
 
 func main() {
+
 	r := app()
-	configRoute(r)
+	routers.Init(r, alertmanager.Routers, grafana.Routers)
+
+	if err := r.Run(); err != nil {
+		fmt.Println("startup service failed, err:%v\n", err)
+	}
 
 	err := r.Run(":9091")
 	if err != nil {
 		Logger.Fatalf("Gin start fail. %v", err)
 	}
-}
-
-func configRoute(engine *gin.Engine) {
-	engine.POST("/alertmanager", handler.AlertManagerHandler())
-	engine.POST("/grafana", handler.GrafanaManagerHandler())
 }
 
 func app() *gin.Engine {

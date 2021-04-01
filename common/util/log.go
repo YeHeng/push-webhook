@@ -14,7 +14,7 @@ var Logger *logrus.Logger
 
 func init() {
 
-	if err := os.MkdirAll(AppConfig.Log.Folder, 0777); err != nil {
+	if err := os.MkdirAll(AppConfig.LogConfig.Folder, 0777); err != nil {
 		fmt.Println(err.Error())
 	}
 
@@ -29,7 +29,7 @@ func init() {
 	})
 
 	// 设置输出
-	Logger.Out = getWriter(AppConfig.Log.Folder, AppConfig.Log.Filename)
+	Logger.Out = getWriter(AppConfig.LogConfig.Folder, AppConfig.LogConfig.Filename)
 
 	// 设置日志级别
 	Logger.SetLevel(logrus.InfoLevel)

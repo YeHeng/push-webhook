@@ -1,12 +1,13 @@
-package alertmanager
+package service
 
 import (
 	"bytes"
 	"fmt"
-	"github.com/YeHeng/qy-wexin-webhook/model"
+	common "github.com/YeHeng/qy-wexin-webhook/common/model"
+	"github.com/YeHeng/qy-wexin-webhook/internal/alertmanager/model"
 )
 
-func alertManagerToMarkdown(notification model.AlertManagerNotification) (markdown *model.MarkdownMessage, robotURL string, err error) {
+func alertManagerToMarkdown(notification model.Notification) (markdown *common.MarkdownMessage, robotURL string, err error) {
 	status := notification.Status
 	commonLabels := notification.CommonAnnotations
 
@@ -29,9 +30,9 @@ func alertManagerToMarkdown(notification model.AlertManagerNotification) (markdo
 		buffer.WriteString(fmt.Sprintf("\n> 结束时间：%s\n", alert.EndsAt.Format("2006-01-02 15:04:05-0700")))
 	}
 
-	markdown = &model.MarkdownMessage{
+	markdown = &common.MarkdownMessage{
 		MsgType: "markdown",
-		Markdown: &model.Markdown{
+		Markdown: &common.Markdown{
 			Content: fmt.Sprintf("# 【%s】告警(当前状态:%s)\n%s", commonLabels["alertname"], status, buffer.String()),
 		},
 	}

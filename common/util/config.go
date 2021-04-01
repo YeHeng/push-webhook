@@ -1,12 +1,12 @@
 package util
 
 import (
-	"github.com/YeHeng/qy-wexin-webhook/model"
+	common "github.com/YeHeng/qy-wexin-webhook/common/model"
 	"github.com/spf13/viper"
 	"log"
 )
 
-var AppConfig model.Configuration
+var AppConfig common.Configuration
 
 func init() {
 	viper.SetConfigName("config")

@@ -1,6 +1,6 @@
 package model
 
-type GrafanaAlert struct {
+type Alert struct {
 	Tags        map[string]string `json:"tags"`
 	EvalMatches []*EvalMatch      `json:"evalMatches"`
 	Title       string            `json:"title"`
@@ -21,7 +21,7 @@ type EvalMatch struct {
 	Tags   map[string]string `json:"tags"`
 }
 
-type GrafanaStateEnum struct {
+type StateEnum struct {
 	PAUSED   string `enum:"paused"`
 	ALERTING string `enum:"alerting"`
 	PENDING  string `enum:"pending"`

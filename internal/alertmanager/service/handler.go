@@ -1,24 +1,25 @@
-package alertmanager
+package service
 
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/YeHeng/qy-wexin-webhook/model"
-	. "github.com/YeHeng/qy-wexin-webhook/util"
+	common "github.com/YeHeng/qy-wexin-webhook/common/model"
+	"github.com/YeHeng/qy-wexin-webhook/common/util"
+	"github.com/YeHeng/qy-wexin-webhook/internal/alertmanager/model"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
 )
 
-func alertManagerHandler(c *gin.Context) {
-	var notification model.AlertManagerNotification
+func AlertManagerHandler(c *gin.Context) {
+	var notification model.Notification
 
 	key := c.Query("key")
 	err := c.BindJSON(&notification)
 
 	bolB, _ := json.Marshal(notification)
 
-	Logger.Infof("received alertmanager json: %s, robot key: %s", string(bolB), key)
+	util.Logger.Infof("received alertmanager json: %s, robot key: %s", string(bolB), key)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -32,12 +33,12 @@ func alertManagerHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": result.Message, "Code": result.Code})
 }
 
-func alertManager2Wx(notification model.AlertManagerNotification, defaultRobot string) (model.ResultVo, error) {
+func alertManager2Wx(notification model.Notification, defaultRobot string) (common.ResultVo, error) {
 
 	markdown, robotURL, err := alertManagerToMarkdown(notification)
 
 	if err != nil {
-		return model.ResultVo{
+		return common.ResultVo{
 				Code:    400,
 				Message: "marshal json fail " + err.Error(),
 			},
@@ -46,7 +47,7 @@ func alertManager2Wx(notification model.AlertManagerNotification, defaultRobot s
 
 	data, err := json.Marshal(markdown)
 	if err != nil {
-		return model.ResultVo{
+		return common.ResultVo{
 				Code:    400,
 				Message: "marshal json fail " + err.Error(),
 			},
@@ -62,7 +63,7 @@ func alertManager2Wx(notification model.AlertManagerNotification, defaultRobot s
 	}
 
 	if len(qywxRobotURL) == 0 {
-		return model.ResultVo{
+		return common.ResultVo{
 				Code:    404,
 				Message: "robot url is nil",
 			},
@@ -75,7 +76,7 @@ func alertManager2Wx(notification model.AlertManagerNotification, defaultRobot s
 		bytes.NewBuffer(data))
 
 	if err != nil {
-		return model.ResultVo{
+		return common.ResultVo{
 				Code:    400,
 				Message: "request robot url fail " + err.Error(),
 			},
@@ -87,7 +88,7 @@ func alertManager2Wx(notification model.AlertManagerNotification, defaultRobot s
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return model.ResultVo{
+		return common.ResultVo{
 				Code:    404,
 				Message: "request wx api url fail " + err.Error(),
 			},
@@ -98,12 +99,12 @@ func alertManager2Wx(notification model.AlertManagerNotification, defaultRobot s
 
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		Logger.Fatal(err)
+		util.Logger.Fatal(err)
 	}
 	bodyString := string(bodyBytes)
-	Logger.Debugf("response: %s, header: %s", bodyString, resp.Header)
+	util.Logger.Debugf("response: %s, header: %s", bodyString, resp.Header)
 
-	return model.ResultVo{
+	return common.ResultVo{
 		Code:    resp.StatusCode,
 		Message: bodyString,
 	}, nil

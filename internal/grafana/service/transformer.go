@@ -1,13 +1,14 @@
-package grafana
+package service
 
 import (
 	"bytes"
 	"fmt"
-	"github.com/YeHeng/qy-wexin-webhook/model"
+	"github.com/YeHeng/qy-wexin-webhook/common/model"
+	model2 "github.com/YeHeng/qy-wexin-webhook/internal/grafana/model"
 	"strings"
 )
 
-func grafanaToMarkdown(notification model.GrafanaAlert) (newsMessage *model.NewMessage, qyWxUrl string, err error) {
+func grafanaToMarkdown(notification model2.Alert) (newsMessage *model.NewMessage, qyWxUrl string, err error) {
 
 	var buffer bytes.Buffer
 	qyWxUrl = ""

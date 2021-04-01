@@ -13,6 +13,7 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-/alertmanager.yaml
-/prometheus-role.yaml
-/.idea
+alertmanager.yaml
+prometheus-role.yaml
+.idea
+logs

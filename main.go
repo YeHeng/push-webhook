@@ -1,65 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"github.com/YeHeng/qy-wexin-webhook/app/alertmanager"
-	"github.com/YeHeng/qy-wexin-webhook/app/grafana"
-	"github.com/YeHeng/qy-wexin-webhook/routers"
-	. "github.com/YeHeng/qy-wexin-webhook/util"
+	app "github.com/YeHeng/qy-wexin-webhook/common"
+	"github.com/YeHeng/qy-wexin-webhook/common/util"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 func main() {
-
-	r := app()
-	routers.Init(r, alertmanager.Routers, grafana.Routers)
-
-	if err := r.Run(); err != nil {
-		fmt.Println("startup service failed, err:%v\n", err)
-	}
-
-	err := r.Run(":9091")
-	if err != nil {
-		Logger.Fatalf("Gin start fail. %v", err)
-	}
-}
-
-func app() *gin.Engine {
-	r := gin.Default()
-	r.Use(func(c *gin.Context) {
-		// 开始时间
-		startTime := time.Now()
-
-		// 处理请求
-		c.Next()
-
-		// 结束时间
-		endTime := time.Now()
-
-		// 执行时间
-		latencyTime := endTime.Sub(startTime)
-
-		// 请求方式
-		reqMethod := c.Request.Method
-
-		// 请求路由
-		reqUri := c.Request.RequestURI
-
-		// 状态码
-		statusCode := c.Writer.Status()
-
-		// 请求IP
-		clientIP := c.ClientIP()
-
-		// 日志格式
-		Logger.Infof("| %3d | %13v | %15s | %s | %s |",
-			statusCode,
-			latencyTime,
-			clientIP,
-			reqMethod,
-			reqUri,
-		)
-	}, gin.Recovery())
-	return r
+	gin.SetMode(gin.ReleaseMode)
+	util.Logger.Infof("开始启动APP!")
+	app.Init(gin.New())
 }

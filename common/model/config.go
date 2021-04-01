@@ -1,7 +1,8 @@
 package model
 
 type Configuration struct {
-	Log LogConfig
+	LogConfig LogConfig
+	Port      string `default:":9092"`
 }
 
 type LogConfig struct {

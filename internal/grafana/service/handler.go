@@ -3,16 +3,16 @@ package service
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/YeHeng/qy-wexin-webhook/common/model"
+	common "github.com/YeHeng/qy-wexin-webhook/common/model"
 	"github.com/YeHeng/qy-wexin-webhook/common/util"
-	model2 "github.com/YeHeng/qy-wexin-webhook/internal/grafana/model"
+	"github.com/YeHeng/qy-wexin-webhook/internal/grafana/model"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
 )
 
 func GrafanaManagerHandler(c *gin.Context) {
-	var alert model2.Alert
+	var alert model.Alert
 
 	key := c.Query("key")
 	err := c.BindJSON(&alert)
@@ -35,12 +35,12 @@ func GrafanaManagerHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": result.Message, "Code": result.Code})
 }
 
-func grafanaSend2Wx(notification model2.Alert, defaultRobot string) (model.ResultVo, error) {
+func grafanaSend2Wx(notification model.Alert, defaultRobot string) (common.ResultVo, error) {
 
 	markdown, qyWxUrl, err := grafanaToMarkdown(notification)
 
 	if err != nil {
-		return model.ResultVo{
+		return common.ResultVo{
 				Code:    400,
 				Message: "marshal json fail " + err.Error(),
 			},
@@ -49,7 +49,7 @@ func grafanaSend2Wx(notification model2.Alert, defaultRobot string) (model.Resul
 
 	data, err := json.Marshal(markdown)
 	if err != nil {
-		return model.ResultVo{
+		return common.ResultVo{
 				Code:    400,
 				Message: "marshal json fail " + err.Error(),
 			},
@@ -62,7 +62,7 @@ func grafanaSend2Wx(notification model2.Alert, defaultRobot string) (model.Resul
 	}
 
 	if len(url) == 0 {
-		return model.ResultVo{
+		return common.ResultVo{
 				Code:    404,
 				Message: "robot url is nil",
 			},
@@ -75,7 +75,7 @@ func grafanaSend2Wx(notification model2.Alert, defaultRobot string) (model.Resul
 		bytes.NewBuffer(data))
 
 	if err != nil {
-		return model.ResultVo{
+		return common.ResultVo{
 				Code:    400,
 				Message: "request robot url fail " + err.Error(),
 			},
@@ -87,7 +87,7 @@ func grafanaSend2Wx(notification model2.Alert, defaultRobot string) (model.Resul
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return model.ResultVo{
+		return common.ResultVo{
 				Code:    404,
 				Message: "request wx api url fail " + err.Error(),
 			},
@@ -103,7 +103,7 @@ func grafanaSend2Wx(notification model2.Alert, defaultRobot string) (model.Resul
 	bodyString := string(bodyBytes)
 	util.Logger.Debugf("response: %s, header: %s", bodyString, resp.Header)
 
-	return model.ResultVo{
+	return common.ResultVo{
 		Code:    resp.StatusCode,
 		Message: bodyString,
 	}, nil

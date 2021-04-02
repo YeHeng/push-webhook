@@ -5,6 +5,7 @@ import (
 	"github.com/YeHeng/qy-wexin-webhook/internal/alertmanager"
 	"github.com/YeHeng/qy-wexin-webhook/internal/grafana"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -17,7 +18,9 @@ func config(r *gin.Engine, opts ...Option) {
 	}
 }
 
-func Init(r *gin.Engine) *gin.Engine {
+func Init() *gin.Engine {
+
+	r := gin.New()
 	r.Use(func(c *gin.Context) {
 		// 开始时间
 		startTime := time.Now()
@@ -44,18 +47,21 @@ func Init(r *gin.Engine) *gin.Engine {
 		clientIP := c.ClientIP()
 
 		// 日志格式
-		util.Logger.Infof("| %3d | %13v | %15s | %s | %s |",
-			statusCode,
-			latencyTime,
-			clientIP,
-			reqMethod,
-			reqUri,
-		)
+		util.Logger.WithFields(logrus.Fields{
+			"client_ip":      clientIP,
+			"status_code":    statusCode,
+			"latency_time":   latencyTime,
+			"request_method": reqMethod,
+			"request_uri":    reqUri,
+			"response_size":  c.Writer.Size(),
+		}).Infof("%d %s %s", statusCode, reqMethod, reqUri)
+
 	}, gin.Recovery())
 
 	config(r, alertmanager.Routers, grafana.Routers)
 
 	config := util.AppConfig
+	util.Logger.Infof("开始启动APP!")
 
 	if err := r.Run(":" + config.Port); err != nil {
 		util.Logger.Fatalf("Gin start fail. %v", err)

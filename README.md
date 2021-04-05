@@ -1,1 +1,1 @@
-# qy-wexin-webhook
+# push-webhook

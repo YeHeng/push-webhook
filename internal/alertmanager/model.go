@@ -1,4 +1,4 @@
-package model
+package alertmanager
 
 import "time"
 

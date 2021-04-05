@@ -1,6 +1,6 @@
 package model
 
-type ResultVo struct {
+type CommonResult struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }

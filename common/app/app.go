@@ -1,24 +1,12 @@
-package common
+package app
 
 import (
-	"github.com/YeHeng/push-webhook/common/util"
-	"github.com/YeHeng/push-webhook/internal/alertmanager"
-	"github.com/YeHeng/push-webhook/internal/grafana"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"time"
 )
 
-type Option func(*gin.Engine)
-
-// 初始化
-func config(r *gin.Engine, opts ...Option) {
-	for _, opt := range opts {
-		opt(r)
-	}
-}
-
-func Init() *gin.Engine {
+func CreateApp() *gin.Engine {
 
 	r := gin.New()
 	r.Use(func(c *gin.Context) {
@@ -47,7 +35,7 @@ func Init() *gin.Engine {
 		clientIP := c.ClientIP()
 
 		// 日志格式
-		util.Logger.WithFields(logrus.Fields{
+		Logger.WithFields(logrus.Fields{
 			"client_ip":      clientIP,
 			"status_code":    statusCode,
 			"latency_time":   latencyTime,
@@ -57,15 +45,6 @@ func Init() *gin.Engine {
 		}).Infof("%d %s %s", statusCode, reqMethod, reqUri)
 
 	}, gin.Recovery())
-
-	config(r, alertmanager.Routers, grafana.Routers)
-
-	config := util.AppConfig
-	util.Logger.Infof("开始启动APP!")
-
-	if err := r.Run(":" + config.Port); err != nil {
-		util.Logger.Fatalf("Gin start fail. %v", err)
-	}
 
 	return r
 }

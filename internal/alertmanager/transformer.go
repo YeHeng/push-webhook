@@ -1,13 +1,12 @@
-package service
+package alertmanager
 
 import (
 	"bytes"
 	"fmt"
 	common "github.com/YeHeng/push-webhook/common/model"
-	"github.com/YeHeng/push-webhook/internal/alertmanager/model"
 )
 
-func alertManagerToMarkdown(notification model.Notification) (markdown *common.MarkdownMessage, robotURL string, err error) {
+func alertManagerToMarkdown(notification Notification) (markdown *common.MarkdownMessage, robotURL string, err error) {
 	status := notification.Status
 	commonLabels := notification.CommonAnnotations
 

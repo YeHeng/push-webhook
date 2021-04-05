@@ -1,4 +1,4 @@
-package model
+package grafana
 
 type Alert struct {
 	Tags        map[string]string `json:"tags"`

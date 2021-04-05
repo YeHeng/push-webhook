@@ -9,7 +9,7 @@ type Configuration struct {
 
 type LogConfig struct {
 	Folder      string        `default:"./logs/"`
-	Filename    string        `default:"webhook.log"`
+	Filename    string        `default:"app.log"`
 	Level       string        `default:"info"`
 	RollingTime time.Duration `default:"24h"`
 	MaxAge      time.Duration `default:"168h"`

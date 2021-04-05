@@ -1,4 +1,4 @@
-package util
+package app
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ var Logger *logrus.Logger
 
 func init() {
 
-	if err := os.MkdirAll(AppConfig.LogConfig.Folder, 0777); err != nil {
+	if err := os.MkdirAll(Config.LogConfig.Folder, 0777); err != nil {
 		fmt.Println(err.Error())
 	}
 
@@ -27,7 +27,7 @@ func init() {
 
 	Logger.AddHook(newLfsHook())
 
-	level, err := logrus.ParseLevel(AppConfig.LogConfig.Level)
+	level, err := logrus.ParseLevel(Config.LogConfig.Level)
 
 	if err != nil {
 		Logger.SetLevel(logrus.WarnLevel)
@@ -43,10 +43,10 @@ func newLfsHook() logrus.Hook {
 	// 保存7天内的日志，每24小时(整点)分割一次日志
 	writer, err := rotateLogs.New(
 		// 没有使用go风格反人类的format格式
-		AppConfig.LogConfig.Folder+AppConfig.LogConfig.Filename+".%Y%m%d",
-		rotateLogs.WithLinkName(AppConfig.LogConfig.Folder+AppConfig.LogConfig.Filename),
-		rotateLogs.WithMaxAge(AppConfig.LogConfig.MaxAge),
-		rotateLogs.WithRotationTime(AppConfig.LogConfig.RollingTime),
+		Config.LogConfig.Folder+Config.LogConfig.Filename+".%Y%m%d",
+		rotateLogs.WithLinkName(Config.LogConfig.Folder+Config.LogConfig.Filename),
+		rotateLogs.WithMaxAge(Config.LogConfig.MaxAge),
+		rotateLogs.WithRotationTime(Config.LogConfig.RollingTime),
 	)
 	if err != nil {
 		panic(err)

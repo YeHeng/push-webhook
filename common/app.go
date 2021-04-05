@@ -1,9 +1,9 @@
 package common
 
 import (
-	"github.com/YeHeng/qy-wexin-webhook/common/util"
-	"github.com/YeHeng/qy-wexin-webhook/internal/alertmanager"
-	"github.com/YeHeng/qy-wexin-webhook/internal/grafana"
+	"github.com/YeHeng/push-webhook/common/util"
+	"github.com/YeHeng/push-webhook/internal/alertmanager"
+	"github.com/YeHeng/push-webhook/internal/grafana"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"time"

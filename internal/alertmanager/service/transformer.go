@@ -3,8 +3,8 @@ package service
 import (
 	"bytes"
 	"fmt"
-	common "github.com/YeHeng/qy-wexin-webhook/common/model"
-	"github.com/YeHeng/qy-wexin-webhook/internal/alertmanager/model"
+	common "github.com/YeHeng/push-webhook/common/model"
+	"github.com/YeHeng/push-webhook/internal/alertmanager/model"
 )
 
 func alertManagerToMarkdown(notification model.Notification) (markdown *common.MarkdownMessage, robotURL string, err error) {

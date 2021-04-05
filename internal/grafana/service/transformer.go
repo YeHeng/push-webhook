@@ -3,8 +3,8 @@ package service
 import (
 	"bytes"
 	"fmt"
-	"github.com/YeHeng/qy-wexin-webhook/common/model"
-	model2 "github.com/YeHeng/qy-wexin-webhook/internal/grafana/model"
+	"github.com/YeHeng/push-webhook/common/model"
+	model2 "github.com/YeHeng/push-webhook/internal/grafana/model"
 	"strings"
 )
 

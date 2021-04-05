@@ -1,7 +1,7 @@
 package grafana
 
 import (
-	"github.com/YeHeng/qy-wexin-webhook/internal/grafana/service"
+	"github.com/YeHeng/push-webhook/internal/grafana/service"
 	"github.com/gin-gonic/gin"
 )
 

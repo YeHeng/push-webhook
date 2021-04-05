@@ -1,7 +1,7 @@
 package main
 
 import (
-	app "github.com/YeHeng/qy-wexin-webhook/common"
+	app "github.com/YeHeng/push-webhook/common"
 )
 
 func main() {

@@ -3,9 +3,9 @@ package service
 import (
 	"bytes"
 	"encoding/json"
-	common "github.com/YeHeng/qy-wexin-webhook/common/model"
-	"github.com/YeHeng/qy-wexin-webhook/common/util"
-	"github.com/YeHeng/qy-wexin-webhook/internal/grafana/model"
+	common "github.com/YeHeng/push-webhook/common/model"
+	"github.com/YeHeng/push-webhook/common/util"
+	"github.com/YeHeng/push-webhook/internal/grafana/model"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"

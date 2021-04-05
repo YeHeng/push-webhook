@@ -1,7 +1,7 @@
 package util
 
 import (
-	common "github.com/YeHeng/qy-wexin-webhook/common/model"
+	common "github.com/YeHeng/push-webhook/common/model"
 	"github.com/spf13/viper"
 	"log"
 )

@@ -5,8 +5,8 @@ After=network.target
 [Service]
 User=root
 Restart=on-failure
-WorkingDirectory=/usr/local/share/qy-weixin-webhook
-ExecStart=/usr/local/share/qy-weixin-webhook/qy-weixin-webhook
+WorkingDirectory=/usr/local/share/push-webhook
+ExecStart=/usr/local/share/push-webhook/push-webhook
 
 [Install]
 WantedBy=multi-user.target

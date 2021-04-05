@@ -2,7 +2,7 @@ port: 9092
 
 logConfig:
   folder: ./logs/
-  filename: webhook.log
+  filename: app.log
   rollingTime: 24h
   level: debug
   maxAge: 168h

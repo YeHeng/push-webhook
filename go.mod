@@ -1,4 +1,4 @@
-module github.com/YeHeng/qy-wexin-webhook
+module github.com/YeHeng/push-webhook
 
 go 1.15
 

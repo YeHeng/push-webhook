@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+
+	api "github.com/YeHeng/push-webhook/api"
 	"github.com/YeHeng/push-webhook/app"
-	common "github.com/YeHeng/push-webhook/common/model"
+	"github.com/YeHeng/push-webhook/common/model"
 	"github.com/YeHeng/push-webhook/internal/push/qywx"
 	"github.com/gin-gonic/gin"
 )
@@ -16,10 +18,10 @@ type grafanaTransform struct {
 }
 
 func init() {
-	app.RegisterTransformer(Grafana, &grafanaTransform{})
+	api.RegisterTransformer(Grafana, &grafanaTransform{})
 }
 
-func (s *grafanaTransform) Transform(c *gin.Context) (*common.PushMessage, error) {
+func (s *grafanaTransform) Transform(c *gin.Context) (*model.PushMessage, error) {
 	var alert Alert
 
 	var buffer bytes.Buffer
@@ -75,7 +77,7 @@ func (s *grafanaTransform) Transform(c *gin.Context) (*common.PushMessage, error
 		app.Logger.Errorf("序列化json异常，原因：%v", err)
 		return nil, err
 	}
-	return &common.PushMessage{
+	return &model.PushMessage{
 		Content:     string(content),
 		Key:         key,
 		PushChannel: app.Config.Channel,

@@ -2,10 +2,12 @@ package qywx
 
 import (
 	"bytes"
-	"github.com/YeHeng/push-webhook/app"
-	"github.com/YeHeng/push-webhook/common/model"
 	"io/ioutil"
 	"net/http"
+
+	api "github.com/YeHeng/push-webhook/api"
+	"github.com/YeHeng/push-webhook/app"
+	"github.com/YeHeng/push-webhook/common/model"
 )
 
 const (
@@ -16,7 +18,7 @@ const (
 type EnterpriseWechatPushService struct{}
 
 func init() {
-	app.RegisterPushStrategy(EnterpriseWechat, &EnterpriseWechatPushService{})
+	api.RegisterPushStrategy(EnterpriseWechat, &EnterpriseWechatPushService{})
 }
 
 // Save Save

@@ -5,5 +5,5 @@ import (
 )
 
 func Routers(e *gin.Engine) {
-	e.POST("/grafana", routeHandler)
+	e.POST("/webhook/grafana", routeHandler)
 }

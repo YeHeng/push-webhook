@@ -5,5 +5,5 @@ import (
 )
 
 func Routers(e *gin.Engine) {
-	e.POST("/alertmanager", routerHandler)
+	e.POST("/webhook/alertmanager", routerHandler)
 }

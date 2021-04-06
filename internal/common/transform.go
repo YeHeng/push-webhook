@@ -3,6 +3,8 @@ package common
 import (
 	"encoding/json"
 	"fmt"
+
+	api "github.com/YeHeng/push-webhook/api"
 	"github.com/YeHeng/push-webhook/app"
 	"github.com/YeHeng/push-webhook/common/model"
 	"github.com/gin-gonic/gin"
@@ -15,7 +17,7 @@ type commonTransform struct {
 }
 
 func init() {
-	app.RegisterTransformer(Common, &commonTransform{})
+	api.RegisterTransformer(Common, &commonTransform{})
 }
 
 func (s *commonTransform) Transform(c *gin.Context) (*model.PushMessage, error) {

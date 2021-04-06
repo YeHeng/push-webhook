@@ -2,16 +2,16 @@ package app
 
 import (
 	"fmt"
-	"github.com/YeHeng/push-webhook/common/model"
 	"strings"
+
+	"github.com/YeHeng/push-webhook/common/model"
 )
 
 type PushStrategy interface {
 	Push(content *model.PushMessage) (model.CommonResult, error)
 }
 
-var pushServices = map[string]PushStrategy{
-}
+var pushServices = map[string]PushStrategy{}
 
 func GetPushStrategy(channel string) (PushStrategy, error) {
 	s, ok := pushServices[strings.ToUpper(channel)]

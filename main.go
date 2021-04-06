@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/YeHeng/push-webhook/common/app"
+	"github.com/YeHeng/push-webhook/app"
 	"github.com/YeHeng/push-webhook/internal/alertmanager"
 	"github.com/YeHeng/push-webhook/internal/grafana"
 )

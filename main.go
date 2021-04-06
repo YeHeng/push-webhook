@@ -2,14 +2,15 @@ package main
 
 import (
 	"github.com/YeHeng/push-webhook/app"
-	"github.com/YeHeng/push-webhook/internal/webhook/alertmanager"
-	"github.com/YeHeng/push-webhook/internal/webhook/grafana"
+	"github.com/YeHeng/push-webhook/internal/common"
+	"github.com/YeHeng/push-webhook/internal/middleware/alertmanager"
+	"github.com/YeHeng/push-webhook/internal/middleware/grafana"
 )
 
 func main() {
 
 	r := app.CreateApp()
-	app.InitRouter(r, alertmanager.Routers, grafana.Routers)
+	app.InitRouter(r, common.Routers, alertmanager.Routers, grafana.Routers)
 
 	app.Logger.Infof("开始启动APP!")
 

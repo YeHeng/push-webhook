@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/YeHeng/push-webhook/app"
-	"github.com/YeHeng/push-webhook/internal/alertmanager"
-	"github.com/YeHeng/push-webhook/internal/grafana"
+	"github.com/YeHeng/push-webhook/internal/webhook/alertmanager"
+	"github.com/YeHeng/push-webhook/internal/webhook/grafana"
 )
 
 func main() {

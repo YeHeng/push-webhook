@@ -8,4 +8,4 @@ logConfig:
   maxbackups: 7
   localtime: false
   compress: true
-  maxsize: 1024
+  maxsize: 1

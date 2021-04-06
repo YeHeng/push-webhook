@@ -8,7 +8,6 @@ import (
 	common "github.com/YeHeng/push-webhook/common/model"
 	"github.com/YeHeng/push-webhook/internal/push/qywx"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 const AlertManager string = "ALERT_MANAGER"
@@ -26,12 +25,15 @@ func (s *alertManagerTransform) Transform(c *gin.Context) (*common.PushMessage, 
 	err := c.BindJSON(&notification)
 
 	key := c.Query("key")
+	if len(key) < 0 {
+		key = app.Config.Key
+	}
+
 	bolB, _ := json.Marshal(notification)
 
 	app.Logger.Infof("received alertmanager json: %s, robot key: %s", string(bolB), key)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		app.Logger.Errorf("序列化json异常，原因：%v", err)
 		return nil, fmt.Errorf("序列化json异常，原因：%v", err)
 	}
@@ -69,9 +71,9 @@ func (s *alertManagerTransform) Transform(c *gin.Context) (*common.PushMessage, 
 		return nil, err
 	}
 	return &common.PushMessage{
-		Content:     content,
+		Content:     string(content),
 		Key:         key,
-		PushChannel: qywx.EnterpriseWechat,
+		PushChannel: app.Config.Channel,
 		Params:      nil,
 	}, nil
 }

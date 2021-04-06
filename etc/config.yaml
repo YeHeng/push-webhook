@@ -4,8 +4,11 @@ logConfig:
   folder: ./logs/
   filename: app.log
   maxage: 24
-  level: debug
+  level: info
   maxbackups: 7
   localtime: false
   compress: true
   maxsize: 1
+
+channel: ENTERPRISE_WECHAT
+key: 70fef7f4-2b63-48aa-ad22-b00636d0caa6

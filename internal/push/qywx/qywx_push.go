@@ -13,14 +13,14 @@ const (
 )
 
 // FileStorage 保存到文件
-type EnterpriceWechatPushService struct{}
+type EnterpriseWechatPushService struct{}
 
 func init() {
-	app.RegisterPushStrategy(EnterpriseWechat, &EnterpriceWechatPushService{})
+	app.RegisterPushStrategy(EnterpriseWechat, &EnterpriseWechatPushService{})
 }
 
 // Save Save
-func (s *EnterpriceWechatPushService) Push(msg *model.PushMessage) (model.CommonResult, error) {
+func (s *EnterpriseWechatPushService) Push(msg *model.PushMessage) (model.CommonResult, error) {
 	var key string
 	key = msg.Key
 
@@ -35,7 +35,7 @@ func (s *EnterpriceWechatPushService) Push(msg *model.PushMessage) (model.Common
 	req, err := http.NewRequest(
 		"POST",
 		"https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key="+key,
-		bytes.NewBuffer(msg.Content))
+		bytes.NewBufferString(msg.Content))
 
 	if err != nil {
 		return model.CommonResult{

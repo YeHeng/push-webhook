@@ -3,6 +3,8 @@ package model
 type Configuration struct {
 	LogConfig LogConfig
 	Port      string `default:"9092"`
+	Channel   string
+	Key       string
 }
 
 type LogConfig struct {

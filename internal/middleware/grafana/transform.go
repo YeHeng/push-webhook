@@ -8,7 +8,6 @@ import (
 	common "github.com/YeHeng/push-webhook/common/model"
 	"github.com/YeHeng/push-webhook/internal/push/qywx"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 const Grafana string = "GRAFANA"
@@ -29,13 +28,15 @@ func (s *grafanaTransform) Transform(c *gin.Context) (*common.PushMessage, error
 	param = make(map[string]string)
 
 	key := c.Query("key")
+	if len(key) < 0 {
+		key = app.Config.Key
+	}
 	param["key"] = key
 	bolB, _ := json.Marshal(alert)
 
 	app.Logger.Infof("received alertmanager json: %s, robot key: %s", string(bolB), key)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		app.Logger.Errorf("序列化json异常，原因：%v", err)
 		return nil, fmt.Errorf("序列化json异常，原因：%v", err)
 	}
@@ -75,9 +76,9 @@ func (s *grafanaTransform) Transform(c *gin.Context) (*common.PushMessage, error
 		return nil, err
 	}
 	return &common.PushMessage{
-		Content:     content,
+		Content:     string(content),
 		Key:         key,
-		PushChannel: qywx.EnterpriseWechat,
+		PushChannel: app.Config.Channel,
 		Params:      nil,
 	}, nil
 }

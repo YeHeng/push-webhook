@@ -1,4 +1,4 @@
-package model
+package qywx
 
 type TextMessage struct {
 	MsgType             string   `json:"msgtype"`

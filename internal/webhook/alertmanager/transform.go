@@ -2,18 +2,45 @@ package alertmanager
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"github.com/YeHeng/push-webhook/app"
 	common "github.com/YeHeng/push-webhook/common/model"
+	"github.com/YeHeng/push-webhook/internal/push/qywx"
+	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
-func alertManagerToMarkdown(notification Notification) (markdown *common.MarkdownMessage, robotURL string, err error) {
+const AlertManager string = "ALERT_MANAGER"
+
+type alertManagerTransform struct {
+}
+
+func init() {
+	app.RegisterTransformer(AlertManager, &alertManagerTransform{})
+}
+
+func (s *alertManagerTransform) Transform(c *gin.Context) (*common.PushMessage, error) {
+	var notification Notification
+	var buffer bytes.Buffer
+	err := c.BindJSON(&notification)
+
+	key := c.Query("key")
+	bolB, _ := json.Marshal(notification)
+
+	app.Logger.Infof("received alertmanager json: %s, robot key: %s", string(bolB), key)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		app.Logger.Errorf("序列化json异常，原因：%v", err)
+		return nil, fmt.Errorf("序列化json异常，原因：%v", err)
+	}
+
 	status := notification.Status
 	commonLabels := notification.CommonAnnotations
 
 	annotations := notification.CommonAnnotations
-	robotURL = annotations["robotUrl"]
-
-	var buffer bytes.Buffer
+	key = annotations["key"]
 
 	buffer.WriteString("## 告警项:\n")
 
@@ -29,11 +56,22 @@ func alertManagerToMarkdown(notification Notification) (markdown *common.Markdow
 		buffer.WriteString(fmt.Sprintf("\n> 结束时间：%s\n", alert.EndsAt.Format("2006-01-02 15:04:05-0700")))
 	}
 
-	markdown = &common.MarkdownMessage{
+	markdown := &qywx.MarkdownMessage{
 		MsgType: "markdown",
-		Markdown: &common.Markdown{
+		Markdown: &qywx.Markdown{
 			Content: fmt.Sprintf("# 【%s】告警(当前状态:%s)\n%s", commonLabels["alertname"], status, buffer.String()),
 		},
 	}
-	return
+
+	content, err := json.Marshal(markdown)
+	if err != nil {
+		app.Logger.Errorf("序列化json异常，原因：%v", err)
+		return nil, err
+	}
+	return &common.PushMessage{
+		Content:     content,
+		Key:         key,
+		PushChannel: qywx.EnterpriseWechat,
+		Params:      nil,
+	}, nil
 }

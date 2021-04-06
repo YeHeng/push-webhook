@@ -2,14 +2,16 @@ package grafana
 
 import (
 	"fmt"
+	"net/http"
+
+	api "github.com/YeHeng/push-webhook/api"
 	"github.com/YeHeng/push-webhook/app"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 func routeHandler(c *gin.Context) {
 
-	transformer, e := app.GetTransformer(Grafana)
+	transformer, e := api.GetTransformer(Grafana)
 	if e != nil {
 		app.Logger.Errorf("%v", e)
 		c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("%v", e), "Code": -1})
@@ -23,7 +25,7 @@ func routeHandler(c *gin.Context) {
 		return
 	}
 
-	pushService, e := app.GetPushStrategy(msg.PushChannel)
+	pushService, e := api.GetPushStrategy(msg.PushChannel)
 	if e != nil {
 		app.Logger.Errorf("%v", e)
 		c.JSON(http.StatusOK, gin.H{"message": fmt.Sprintf("%v", e), "Code": -1})

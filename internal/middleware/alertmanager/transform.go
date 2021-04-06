@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+
+	api "github.com/YeHeng/push-webhook/api"
 	"github.com/YeHeng/push-webhook/app"
-	common "github.com/YeHeng/push-webhook/common/model"
+	"github.com/YeHeng/push-webhook/common/model"
 	"github.com/YeHeng/push-webhook/internal/push/qywx"
 	"github.com/gin-gonic/gin"
 )
@@ -16,10 +18,10 @@ type alertManagerTransform struct {
 }
 
 func init() {
-	app.RegisterTransformer(AlertManager, &alertManagerTransform{})
+	api.RegisterTransformer(AlertManager, &alertManagerTransform{})
 }
 
-func (s *alertManagerTransform) Transform(c *gin.Context) (*common.PushMessage, error) {
+func (s *alertManagerTransform) Transform(c *gin.Context) (*model.PushMessage, error) {
 	var notification Notification
 	var buffer bytes.Buffer
 	err := c.BindJSON(&notification)
@@ -70,7 +72,7 @@ func (s *alertManagerTransform) Transform(c *gin.Context) (*common.PushMessage, 
 		app.Logger.Errorf("序列化json异常，原因：%v", err)
 		return nil, err
 	}
-	return &common.PushMessage{
+	return &model.PushMessage{
 		Content:     string(content),
 		Key:         key,
 		PushChannel: app.Config.Channel,

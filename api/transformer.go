@@ -2,17 +2,17 @@ package app
 
 import (
 	"fmt"
-	common "github.com/YeHeng/push-webhook/common/model"
-	"github.com/gin-gonic/gin"
 	"strings"
+
+	"github.com/YeHeng/push-webhook/common/model"
+	"github.com/gin-gonic/gin"
 )
 
 type TransformerStrategy interface {
-	Transform(c *gin.Context) (*common.PushMessage, error)
+	Transform(c *gin.Context) (*model.PushMessage, error)
 }
 
-var transformers = map[string]TransformerStrategy{
-}
+var transformers = map[string]TransformerStrategy{}
 
 func GetTransformer(channel string) (TransformerStrategy, error) {
 	s, ok := transformers[strings.ToUpper(channel)]

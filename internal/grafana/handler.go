@@ -3,7 +3,7 @@ package grafana
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/YeHeng/push-webhook/common/app"
+	"github.com/YeHeng/push-webhook/app"
 	common "github.com/YeHeng/push-webhook/common/model"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"

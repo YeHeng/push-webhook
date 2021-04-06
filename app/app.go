@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -35,14 +35,14 @@ func CreateApp() *gin.Engine {
 		clientIP := c.ClientIP()
 
 		// 日志格式
-		Logger.WithFields(logrus.Fields{
-			"client_ip":      clientIP,
-			"status_code":    statusCode,
-			"latency_time":   latencyTime,
-			"request_method": reqMethod,
-			"request_uri":    reqUri,
-			"response_size":  c.Writer.Size(),
-		}).Infof("%d %s %s", statusCode, reqMethod, reqUri)
+		Logger.Infow("",
+			zap.String("client_ip", clientIP),
+			zap.Int("status_code", statusCode),
+			zap.Duration("latency_time", latencyTime),
+			zap.String("request_method", reqMethod),
+			zap.String("request_uri", reqUri),
+			zap.Int("response_size", c.Writer.Size()),
+		)
 
 	}, gin.Recovery())
 

@@ -14,7 +14,6 @@ const (
 	EnterpriseWechat string = "ENTERPRISE_WECHAT"
 )
 
-// FileStorage 保存到文件
 type EnterpriseWechatPushService struct{}
 
 func init() {

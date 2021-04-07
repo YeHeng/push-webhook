@@ -3,8 +3,6 @@ module github.com/YeHeng/push-webhook
 go 1.15
 
 require (
-	github.com/gin-contrib/gzip v0.0.3
-	github.com/gin-contrib/static v0.0.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
 	github.com/hoisie/mustache v0.0.0-20160804235033-6375acf62c69

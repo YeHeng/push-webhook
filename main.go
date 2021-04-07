@@ -8,14 +8,10 @@ import (
 	"github.com/YeHeng/push-webhook/internal/common"
 	"github.com/YeHeng/push-webhook/internal/middleware/alertmanager"
 	"github.com/YeHeng/push-webhook/internal/middleware/grafana"
-	"github.com/gin-contrib/gzip"
-	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
 	"os/signal"
-	"path/filepath"
-	"strings"
 	"syscall"
 	"time"
 )
@@ -23,15 +19,15 @@ import (
 func main() {
 
 	r := gin.New()
-	r.Use(middleware.Logger(), middleware.Recovery(false), gzip.Gzip(gzip.DefaultCompression))
+	r.Use(middleware.Logger(), middleware.Recovery(false) /*, gzip.Gzip(gzip.DefaultCompression)*/)
 	app.Logger.Infow("初始化Router...")
 	app.InitRouter(r, common.Routers, alertmanager.Routers, grafana.Routers)
-	r.Static("/static", "./web")
+	/*r.Static("/static", "./web")
 	r.Use(static.Serve("/", static.LocalFile("./client/dist", true)))
 	r.NoRoute(noRoute)
 	r.NoRoute(func(c *gin.Context) {
 		c.File(filepath.Join(".", "client", "dist", "index.html"))
-	})
+	})*/
 
 	app.Logger.Infof("开始启动APP!")
 
@@ -75,11 +71,11 @@ func main() {
 
 }
 
-func noRoute(c *gin.Context) {
+/*func noRoute(c *gin.Context) {
 	path := strings.Split(c.Request.URL.Path, "/")
 	if path[1] == "api" {
 		c.JSON(http.StatusNotFound, gin.H{"msg": "no route", "body": nil})
 	} else {
 		c.HTML(http.StatusOK, "index.html", "")
 	}
-}
+}*/
